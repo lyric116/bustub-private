@@ -12,8 +12,11 @@
 
 #pragma once
 
+#include <atomic>
 #include <cstdint>
 #include <functional>
+#include <mutex>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -101,6 +104,19 @@ class CountMinSketch {
       return bustub::HashUtil::CombineHashes(h1, h2) % width_;
     };
   }
+
+  /**
+   * Flat row-major count matrix with shape [depth_][width_].
+   * Atomic counters allow lock-free concurrent inserts.
+   */
+  std::vector<std::atomic<uint32_t>> sketch_;
+
+  /** Internal state for top-k tracking. */
+  mutable std::mutex top_k_latch_;
+  bool top_k_initialized_{false};
+  uint16_t initial_k_{0};
+  std::unordered_set<KeyType> item_set_;
+  std::vector<std::pair<KeyType, uint32_t>> top_k_heap_;
 
   /** @todo (student) can add their data structures that support count-min sketch operations */
 };
