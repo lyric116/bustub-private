@@ -15,7 +15,7 @@
 #include <atomic>
 #include <cstdint>
 #include <functional>
-#include <mutex>
+#include <mutex>  // NOLINT
 #include <unordered_set>
 #include <utility>
 #include <vector>
