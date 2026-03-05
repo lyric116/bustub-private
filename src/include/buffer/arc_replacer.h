@@ -47,7 +47,7 @@ class ArcReplacer {
   auto Evict() -> std::optional<frame_id_t>;
   void RecordAccess(frame_id_t frame_id, page_id_t page_id, AccessType access_type = AccessType::Unknown);
   void SetEvictable(frame_id_t frame_id, bool set_evictable);
- void Remove(frame_id_t frame_id);
+  void Remove(frame_id_t frame_id);
   auto Size() -> size_t;
 
  private:

@@ -364,8 +364,6 @@ void ArcReplacer::MoveAliveToMfu(frame_id_t frame_id) {
   it->second.iter_ = mfu_.begin();
 }
 
-auto ArcReplacer::IsValidFrameId(frame_id_t frame_id) const -> bool {
-  return frame_id >= 0;
-}
+auto ArcReplacer::IsValidFrameId(frame_id_t frame_id) const -> bool { return frame_id >= 0; }
 
 }  // namespace bustub
