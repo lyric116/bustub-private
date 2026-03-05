@@ -101,6 +101,8 @@ void ArcReplacer::RecordAccess(frame_id_t frame_id, page_id_t page_id, [[maybe_u
     throw std::out_of_range("ArcReplacer::RecordAccess invalid frame_id");
   }
 
+  const bool is_scan = access_type == AccessType::Scan;
+
   auto alive_it = alive_map_.find(frame_id);
   if (alive_it != alive_map_.end()) {
     if (alive_it->second.page_id_ != page_id) {
@@ -115,7 +117,20 @@ void ArcReplacer::RecordAccess(frame_id_t frame_id, page_id_t page_id, [[maybe_u
       alive_map_.erase(alive_it);
       alive_it = alive_map_.end();
     } else {
-      MoveAliveToMfu(frame_id);
+      if (is_scan) {
+        if (alive_it->second.arc_status_ == ArcStatus::MFU) {
+          mfu_.erase(alive_it->second.iter_);
+          mru_.push_back(frame_id);
+          alive_it->second.arc_status_ = ArcStatus::MRU;
+          alive_it->second.iter_ = std::prev(mru_.end());
+        } else {
+          mru_.erase(alive_it->second.iter_);
+          mru_.push_back(frame_id);
+          alive_it->second.iter_ = std::prev(mru_.end());
+        }
+      } else {
+        MoveAliveToMfu(frame_id);
+      }
       return;
     }
   }
@@ -134,7 +149,11 @@ void ArcReplacer::RecordAccess(frame_id_t frame_id, page_id_t page_id, [[maybe_u
       mru_target_size_ = mru_target_size_ > delta ? mru_target_size_ - delta : 0;
     }
     RemoveGhostEntry(page_id);
-    InsertToMfu(frame_id, page_id);
+    if (is_scan) {
+      InsertToMru(frame_id, page_id);
+    } else {
+      InsertToMfu(frame_id, page_id);
+    }
     return;
   }
 
