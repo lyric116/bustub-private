@@ -14,6 +14,7 @@
 
 #include <list>
 #include <memory>
+#include <optional>
 #include <shared_mutex>
 #include <unordered_map>
 #include <vector>
@@ -80,6 +81,9 @@ class FrameHeader {
 
   /** @brief The dirty flag. */
   bool is_dirty_;
+
+  /** @brief The page currently stored in this frame, if any. */
+  std::optional<page_id_t> page_id_{std::nullopt};
 
   /**
    * @brief A pointer to the data of the page that this frame holds.

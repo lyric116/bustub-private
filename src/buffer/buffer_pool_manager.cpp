@@ -74,6 +74,7 @@ void FrameHeader::Reset() {
   std::fill(data_.begin(), data_.end(), 0);
   pin_count_.store(0);
   is_dirty_ = false;
+  page_id_ = std::nullopt;
 }
 
 /**
@@ -257,28 +258,22 @@ auto BufferPoolManager::CheckedWritePage(page_id_t page_id, AccessType access_ty
       frame_id = available_frame.value();
       frame = frames_[frame_id];
 
-      auto old_page_it = page_table_.end();
-      for (auto it = page_table_.begin(); it != page_table_.end(); ++it) {
-        if (it->second == frame_id) {
-          old_page_it = it;
-          break;
-        }
-      }
-
-      if (old_page_it != page_table_.end()) {
+      if (frame->page_id_.has_value()) {
+        const auto old_page_id = frame->page_id_.value();
         if (frame->is_dirty_) {
-          const bool ok = IssueDiskWrite(disk_scheduler_, old_page_it->first, frame->GetDataMut());
+          const bool ok = IssueDiskWrite(disk_scheduler_, old_page_id, frame->GetDataMut());
           if (ok) {
             frame->is_dirty_ = false;
           }
         }
-        page_table_.erase(old_page_it);
+        page_table_.erase(old_page_id);
       }
 
       frame->Reset();
       (void)IssueDiskRead(disk_scheduler_, page_id, frame->GetDataMut());
       frame->pin_count_.store(1);
       frame->is_dirty_ = false;
+      frame->page_id_ = page_id;
 
       page_table_[page_id] = frame_id;
       replacer_->RecordAccess(frame_id, page_id, access_type);
@@ -343,28 +338,22 @@ auto BufferPoolManager::CheckedReadPage(page_id_t page_id, AccessType access_typ
       frame_id = available_frame.value();
       frame = frames_[frame_id];
 
-      auto old_page_it = page_table_.end();
-      for (auto it = page_table_.begin(); it != page_table_.end(); ++it) {
-        if (it->second == frame_id) {
-          old_page_it = it;
-          break;
-        }
-      }
-
-      if (old_page_it != page_table_.end()) {
+      if (frame->page_id_.has_value()) {
+        const auto old_page_id = frame->page_id_.value();
         if (frame->is_dirty_) {
-          const bool ok = IssueDiskWrite(disk_scheduler_, old_page_it->first, frame->GetDataMut());
+          const bool ok = IssueDiskWrite(disk_scheduler_, old_page_id, frame->GetDataMut());
           if (ok) {
             frame->is_dirty_ = false;
           }
         }
-        page_table_.erase(old_page_it);
+        page_table_.erase(old_page_id);
       }
 
       frame->Reset();
       (void)IssueDiskRead(disk_scheduler_, page_id, frame->GetDataMut());
       frame->pin_count_.store(1);
       frame->is_dirty_ = false;
+      frame->page_id_ = page_id;
 
       page_table_[page_id] = frame_id;
       replacer_->RecordAccess(frame_id, page_id, access_type);
