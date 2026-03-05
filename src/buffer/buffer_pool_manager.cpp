@@ -22,6 +22,7 @@ namespace bustub {
 
 namespace {
 
+// NOLINTNEXTLINE(readability-non-const-parameter)
 auto IssueDiskWrite(const std::shared_ptr<DiskScheduler> &disk_scheduler, page_id_t page_id, char *data) -> bool {
   auto promise = disk_scheduler->CreatePromise();
   auto future = promise.get_future();
@@ -31,6 +32,7 @@ auto IssueDiskWrite(const std::shared_ptr<DiskScheduler> &disk_scheduler, page_i
   return future.get();
 }
 
+// NOLINTNEXTLINE(readability-non-const-parameter)
 auto IssueDiskRead(const std::shared_ptr<DiskScheduler> &disk_scheduler, page_id_t page_id, char *data) -> bool {
   auto promise = disk_scheduler->CreatePromise();
   auto future = promise.get_future();
