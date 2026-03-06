@@ -1,0 +1,5 @@
+if(EXISTS "/home/lyricx/cmu_15445/bustub-private/build_local/test/rwlatch_test[1]_tests.cmake")
+  include("/home/lyricx/cmu_15445/bustub-private/build_local/test/rwlatch_test[1]_tests.cmake")
+else()
+  add_test(rwlatch_test_NOT_BUILT rwlatch_test_NOT_BUILT)
+endif()

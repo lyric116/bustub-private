@@ -1,0 +1,5 @@
+if(EXISTS "/home/lyricx/cmu_15445/bustub-private/build_local/test/trie_noncopy_test[1]_tests.cmake")
+  include("/home/lyricx/cmu_15445/bustub-private/build_local/test/trie_noncopy_test[1]_tests.cmake")
+else()
+  add_test(trie_noncopy_test_NOT_BUILT trie_noncopy_test_NOT_BUILT)
+endif()

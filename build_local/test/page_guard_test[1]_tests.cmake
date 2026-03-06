@@ -1,0 +1,7 @@
+add_test([=[PageGuardTest.DropTest]=]  /home/lyricx/cmu_15445/bustub-private/build_local/test/page_guard_test [==[--gtest_filter=PageGuardTest.DISABLED_DropTest]==] --gtest_also_run_disabled_tests [==[--gtest_output=xml:/home/lyricx/cmu_15445/bustub-private/build_local/test/page_guard_test.xml]==] [==[--gtest_catch_exceptions=0]==])
+set_tests_properties([=[PageGuardTest.DropTest]=]  PROPERTIES DISABLED TRUE)
+set_tests_properties([=[PageGuardTest.DropTest]=]  PROPERTIES WORKING_DIRECTORY /home/lyricx/cmu_15445/bustub-private/build_local/test SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==] TIMEOUT 120)
+add_test([=[PageGuardTest.MoveTest]=]  /home/lyricx/cmu_15445/bustub-private/build_local/test/page_guard_test [==[--gtest_filter=PageGuardTest.DISABLED_MoveTest]==] --gtest_also_run_disabled_tests [==[--gtest_output=xml:/home/lyricx/cmu_15445/bustub-private/build_local/test/page_guard_test.xml]==] [==[--gtest_catch_exceptions=0]==])
+set_tests_properties([=[PageGuardTest.MoveTest]=]  PROPERTIES DISABLED TRUE)
+set_tests_properties([=[PageGuardTest.MoveTest]=]  PROPERTIES WORKING_DIRECTORY /home/lyricx/cmu_15445/bustub-private/build_local/test SKIP_REGULAR_EXPRESSION [==[\[  SKIPPED \]]==] TIMEOUT 120)
+set(  page_guard_test_TESTS PageGuardTest.DropTest PageGuardTest.MoveTest)
